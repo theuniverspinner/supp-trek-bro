@@ -11,8 +11,15 @@ const SupplementTracker = () => {
   const [supplement, setSupplement] = createSignal('');
   const [intake, setIntake] = createSignal<Supplement[]>([]);
   const [editingId, setEditingId] = createSignal<number | null>(null);
+  const [editingValue, setEditingValue] = createSignal('');
   const autoFocus = useAutoFocus();
 
+/**
+ * Migrates an array of data to an array of Supplement objects.
+ *
+ * @param {any[]} data - The array of data to migrate.
+ * @return {Supplement[]} The array of Supplement objects.
+ */
   const migrateData = (data: any[]): Supplement[] => {
     return data.map((item, index) => ({
       id: item.id || Date.now() + index,
@@ -21,39 +28,42 @@ const SupplementTracker = () => {
     }));
   };
 
-  const addOrUpdateSupplement = (e: Event) => {
+  const addSupplement = (e: Event) => {
     e.preventDefault();
     if (supplement()) {
-      if (editingId() !== null) {
-        setIntake(intake().map(item =>
-          item.id === editingId()
-            ? { ...item, name: supplement(), date: new Date().toISOString() }
-            : item
-        ));
-        setEditingId(null);
-      } else {
-        setIntake([...intake(), {
-          id: Date.now(),
-          name: supplement(),
-          date: new Date().toISOString()
-        }]);
-      }
+      setIntake([...intake(), {
+        id: Date.now(),
+        name: supplement(),
+        date: new Date().toISOString()
+      }]);
       setSupplement('');
       localStorage.setItem('supplementIntake', JSON.stringify(intake()));
     }
   };
 
-  const startEditing = (id: number) => {
-    const item = intake().find(item => item.id === id);
-    if (item) {
-      setSupplement(item.name);
-      setEditingId(id);
+  const updateSupplement = (id: number, newName: string) => {
+    setIntake(intake().map(item =>
+      item.id === id
+        ? { ...item, name: newName, date: new Date().toISOString() }
+        : item
+    ));
+    setEditingId(null);
+    localStorage.setItem('supplementIntake', JSON.stringify(intake()));
+  };
+
+  const handleItemClick = (id: number, currentName: string) => {
+    setEditingId(id);
+    setEditingValue(currentName);
+  };
+
+  const handleItemKeyPress = (e: KeyboardEvent, id: number) => {
+    if (e.key === 'Enter') {
+      updateSupplement(id, editingValue());
     }
   };
 
-  const cancelEditing = () => {
-    setSupplement('');
-    setEditingId(null);
+  const handleEditBlur = (id: number) => {
+    updateSupplement(id, editingValue());
   };
 
   createEffect(() => {
@@ -62,8 +72,6 @@ const SupplementTracker = () => {
       const parsedIntake = JSON.parse(storedIntake);
       const migratedIntake = migrateData(parsedIntake);
       setIntake(migratedIntake);
-
-      // Save migrated data back to localStorage
       localStorage.setItem('supplementIntake', JSON.stringify(migratedIntake));
     }
   });
@@ -71,7 +79,7 @@ const SupplementTracker = () => {
   return (
     <div class="p-4">
       <h1 class="text-2xl font-bold mb-4">Supplement Tracker</h1>
-      <form onSubmit={addOrUpdateSupplement} class="mb-4">
+      <form onSubmit={addSupplement} class="mb-4">
         <input
           type="text"
           value={supplement()}
@@ -80,30 +88,32 @@ const SupplementTracker = () => {
           class="border p-2 mr-2"
           ref={autoFocus}
         />
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded mr-2">
-          {editingId() !== null ? 'Update' : 'Add'} Supplement
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+          Add Supplement
         </button>
-        {editingId() !== null && (
-          <button
-            type="button"
-            onClick={cancelEditing}
-            class="bg-gray-500 text-white p-2 rounded"
-          >
-            Cancel
-          </button>
-        )}
       </form>
       <ul>
         <For each={intake()}>
           {(item) => (
             <li class="mb-2">
-              {`${item.name} - ${new Date(item.date).toLocaleString()}`}
-              <button
-                onClick={() => startEditing(item.id)}
-                class="ml-2 bg-yellow-500 text-white p-1 rounded text-sm"
-              >
-                Edit
-              </button>
+              {editingId() === item.id ? (
+                <input
+                  type="text"
+                  value={editingValue()}
+                  onInput={(e) => setEditingValue(e.currentTarget.value)}
+                  onKeyPress={(e) => handleItemKeyPress(e, item.id)}
+                  onBlur={() => handleEditBlur(item.id)}
+                  class="border p-1"
+                  ref={autoFocus}
+                />
+              ) : (
+                <span 
+                  onClick={() => handleItemClick(item.id, item.name)}
+                  class="cursor-pointer hover:bg-gray-100 p-1"
+                >
+                  {item.name} - {new Date(item.date).toLocaleString()}
+                </span>
+              )}
             </li>
           )}
         </For>
