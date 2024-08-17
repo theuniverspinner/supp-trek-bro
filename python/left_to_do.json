@@ -1,0 +1,11 @@
+{
+  "brahmi": { "name": "Brahmi", "costPerBottle": 20, "dosesPerBottle": 60 },
+  "ginko": { "name": "Ginkgo Biloba", "costPerBottle": 15, "dosesPerBottle": 90 },
+  "nac": { "name": "N-Acetyl Cysteine", "costPerBottle": 18, "dosesPerBottle": 100 },
+  "pbark": { "name": "Pine Bark Extract", "costPerBottle": 30, "dosesPerBottle": 60 },
+  "piba": { "name": "Phenibut", "costPerBottle": 35, "dosesPerBottle": 90 },
+  "awva": { "name": "Ashwagandha", "costPerBottle": 20, "dosesPerBottle": 60 },
+  "lima": { "name": "Lion's Mane", "costPerBottle": 25, "dosesPerBottle": 60 },
+  "psiy": { "name": "Psilocybin", "costPerBottle": 50, "dosesPerBottle": 30 },
+  "apa": { "name": "Palmitoylethanolamide", "costPerBottle": 40, "dosesPerBottle": 60 }
+}

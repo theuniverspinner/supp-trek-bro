@@ -1,61 +1,126 @@
 {
   "cdp": {
-     "name": "CDP-Choline",
-     "brand": "Nutricost",
-     "costPerBottle": 511280,
-     "costPerBottleCurrency": "VND",
-     "dosesPerBottle": 60
+    "name": "CDP-Choline",
+    "brand": "Nutricost",
+    "costPerBottle": 511280,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 60
   },
   "prami": {
-     "name": "Pramiracetam",
-     "brand": "Arbenin",
-     "costPerBottle": 7710,
-     "costPerBottleCurrency": "RUB",
-     "costPerIntake": 77.10,
-     "costPerIntakeCurrency": "RUB",
-     "dosesPerBottle": 100,
-     "dosagePerIntake": 300
+    "name": "Pramiracetam",
+    "brand": "Arbenin",
+    "costPerBottle": 7710,
+    "costPerBottleCurrency": "RUB",
+    "costPerIntake": 77.10,
+    "costPerIntakeCurrency": "RUB",
+    "dosesPerBottle": 100,
+    "dosagePerIntake": 300
   },
   "sjw": {
-     "name": "St. John's Wort",
-     "brand": "Swanson", 
-     "costPerBottle": 190000,
-     "costPerBottleCurrency": "VND",
-     "dosesPerBottle": 120,
-     "dosesPerIntake": 2
+    "name": "St. John's Wort",
+    "brand": "Swanson",
+    "costPerBottle": 190000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 120,
+    "dosesPerIntake": 2
   },
   "l-theanine": {
-     "name": "L-Theanine",
-     "brand": "Nutricost",
-     "costPerBottle": 354000,
-     "costPerBottleCurrency": "VND",
-     "dosesPerBottle": 120,
-     "dosagePerIntake": 200
+    "name": "L-Theanine",
+    "brand": "Nutricost",
+    "costPerBottle": 354000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 120,
+    "dosagePerIntake": 200
   },
   "alcar": {
-     "name": "Acetyl-L-Carnitine",
-     "brand": "Nutricost",
-     "costPerBottle": 503000,
-     "costPerBottleCurrency": "VND",
-     "dosesPerBottle": 180,
-     "dosesPerIntake": 1
+    "name": "Acetyl-L-Carnitine",
+    "brand": "Nutricost",
+    "costPerBottle": 503000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 180,
+    "dosesPerIntake": 1
   },
   "b3": {
-     "name": "Vitamin B3",
-     "brand": "Life Extension",
-     "costPerBottle": 336000,
-     "costPerBottleCurrency": "VND",
-     "dosesPerBottle": 100,
-     "dosagePerCapsule": 500,
-     "dosesPerIntake": 1
+    "name": "Vitamin B3",
+    "brand": "Life Extension",
+    "costPerBottle": 336000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 100,
+    "dosagePerCapsule": 500,
+    "dosesPerIntake": 1
   },
   "ala": {
-     "name": "Alpha-Lipoic Acid",
-     "brand": "Swanson",
-     "costPerBottle": 242000,
-     "costPerBottleCurrency": "VND",
-     "dosesPerBottle": 120,
-     "dosagePerCapsule": 100,
-     "dosesPerIntake": 2
+    "name": "Alpha-Lipoic Acid",
+    "brand": "Swanson",
+    "costPerBottle": 242000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 120,
+    "dosagePerCapsule": 100,
+    "dosesPerIntake": 2
+  },
+  "brahmi": {
+    "name": "Brahmi",
+    "brand": "Himalaya",
+    "costPerBottle": 120000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 60,
+    "dosagePerIntake": 0.5
+  },
+  "ginko": {
+    "name": "Ginkgo Biloba",
+    "brand": "Trunature",
+    "costPerBottle": 335000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 340,
+    "dosagePerIntake": 1
+  },
+  "nac": {
+    "name": "N-Acetyl Cysteine",
+    "brand": "Ostrovit",
+    "costPerBottle": 280000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 150,
+    "dosagePerIntake": 0.5
+  },
+  "pbark": {
+    "name": "Pine Bark Extract",
+    "brand": "Nutricost",
+    "costPerBottle": 420000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 180,
+    "dosagePerIntake": 1,
+    "dosagesPerDay": 1
+  },
+  "awva": {
+    "name": "Ashwagandha",
+    "brand": "Himalaya",
+    "costPerBottle": 100000,
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": 60,
+    "dosagePerIntake": 0.5
+  },
+  "lima": {
+    "name": "Lion's Mane",
+    "brand": "Arbenin",
+    "costPerBottle": 3000,
+    "costPerBottleCurrency": "RUB",
+    "costPerAmount": "3000 RUB per 500g",
+    "dosagePerIntake": 3
+  },
+  "psiy": {
+    "name": "Psilocybin (Microdose)",
+    "brand": "Undefined",
+    "costPerBottle": "TBD",
+    "costPerBottleCurrency": "VND",
+    "dosesPerBottle": "TBD",
+    "dosagePerIntake": 0.1
+  },
+  "apa": {
+    "name": "Amanita Panterina",
+    "brand": "Forest",
+    "costPerBottle": 3000,
+    "costPerBottleCurrency": "RUB",
+    "costPerAmount": "3000 RUB per 50g",
+    "dosagePerIntake": 0.2
   }
 }
