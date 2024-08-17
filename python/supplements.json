@@ -1,0 +1,61 @@
+{
+  "cdp": {
+     "name": "CDP-Choline",
+     "brand": "Nutricost",
+     "costPerBottle": 511280,
+     "costPerBottleCurrency": "VND",
+     "dosesPerBottle": 60
+  },
+  "prami": {
+     "name": "Pramiracetam",
+     "brand": "Arbenin",
+     "costPerBottle": 7710,
+     "costPerBottleCurrency": "RUB",
+     "costPerIntake": 77.10,
+     "costPerIntakeCurrency": "RUB",
+     "dosesPerBottle": 100,
+     "dosagePerIntake": 300
+  },
+  "sjw": {
+     "name": "St. John's Wort",
+     "brand": "Swanson", 
+     "costPerBottle": 190000,
+     "costPerBottleCurrency": "VND",
+     "dosesPerBottle": 120,
+     "dosesPerIntake": 2
+  },
+  "l-theanine": {
+     "name": "L-Theanine",
+     "brand": "Nutricost",
+     "costPerBottle": 354000,
+     "costPerBottleCurrency": "VND",
+     "dosesPerBottle": 120,
+     "dosagePerIntake": 200
+  },
+  "alcar": {
+     "name": "Acetyl-L-Carnitine",
+     "brand": "Nutricost",
+     "costPerBottle": 503000,
+     "costPerBottleCurrency": "VND",
+     "dosesPerBottle": 180,
+     "dosesPerIntake": 1
+  },
+  "b3": {
+     "name": "Vitamin B3",
+     "brand": "Life Extension",
+     "costPerBottle": 336000,
+     "costPerBottleCurrency": "VND",
+     "dosesPerBottle": 100,
+     "dosagePerCapsule": 500,
+     "dosesPerIntake": 1
+  },
+  "ala": {
+     "name": "Alpha-Lipoic Acid",
+     "brand": "Swanson",
+     "costPerBottle": 242000,
+     "costPerBottleCurrency": "VND",
+     "dosesPerBottle": 120,
+     "dosagePerCapsule": 100,
+     "dosesPerIntake": 2
+  }
+}
