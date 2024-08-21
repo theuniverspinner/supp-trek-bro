@@ -97,6 +97,26 @@ const SupplementTracker = () => {
     return groups;
   };
 
+  const sortedDays = () => {
+    const groups = groupIntakeByDay();
+    return Object.keys(groups).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    } else {
+      return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+  };
+
   createEffect(() => {
     const storedIntake = localStorage.getItem('supplementIntake');
     if (storedIntake) {
@@ -124,19 +144,19 @@ const SupplementTracker = () => {
         </button>
       </form>
       <div class="space-y-4">
-        <For each={Object.entries(groupIntakeByDay())}>
-          {([day, items]) => (
+        <For each={sortedDays()}>
+          {(day) => (
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <div 
                 class="bg-gray-100 p-3 flex justify-between items-center cursor-pointer hover:bg-gray-200 transition duration-200"
                 onClick={() => toggleDayExpansion(day)}
               >
-                <h2 class="font-semibold text-lg text-gray-700">{day}</h2>
+                <h2 class="font-semibold text-lg text-gray-700">{formatDate(day)}</h2>
                 {expandedDay() === day ? <FaSolidChevronUp /> : <FaSolidChevronDown />}
               </div>
               {expandedDay() === day && (
                 <ul class="divide-y divide-gray-200">
-                  <For each={items}>
+                  <For each={groupIntakeByDay()[day]}>
                     {(item) => (
                       <li class="p-3 flex items-center justify-between hover:bg-gray-50 transition duration-200">
                         {editingId() === item.id ? (
