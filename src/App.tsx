@@ -14,17 +14,11 @@ const SupplementTracker = () => {
   const [editingValue, setEditingValue] = createSignal('');
   const autoFocus = useAutoFocus();
 
-/**
- * Migrates an array of data to an array of Supplement objects.
- *
- * @param {any[]} data - The array of data to migrate.
- * @return {Supplement[]} The array of Supplement objects.
- */
   const migrateData = (data: any[]): Supplement[] => {
     return data.map((item, index) => ({
       id: item.id || Date.now() + index,
       name: item.name,
-      date: item.date
+      date: item.date,
     }));
   };
 
@@ -34,7 +28,7 @@ const SupplementTracker = () => {
       setIntake([...intake(), {
         id: Date.now(),
         name: supplement(),
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
       }]);
       setSupplement('');
       localStorage.setItem('supplementIntake', JSON.stringify(intake()));
@@ -66,6 +60,19 @@ const SupplementTracker = () => {
     updateSupplement(id, editingValue());
   };
 
+  const exportData = () => {
+    const data = intake();
+    const jsonData = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'supplements.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   createEffect(() => {
     const storedIntake = localStorage.getItem('supplementIntake');
     if (storedIntake) {
@@ -77,7 +84,7 @@ const SupplementTracker = () => {
   });
 
   return (
-    <div class="p-4">
+    <div class="p-4 relative">
       <h1 class="text-2xl font-bold mb-4">Supplement Tracker</h1>
       <form onSubmit={addSupplement} class="mb-4">
         <input
@@ -107,7 +114,7 @@ const SupplementTracker = () => {
                   ref={autoFocus}
                 />
               ) : (
-                <span 
+                <span
                   onClick={() => handleItemClick(item.id, item.name)}
                   class="cursor-pointer hover:bg-gray-100 p-1"
                 >
@@ -118,6 +125,12 @@ const SupplementTracker = () => {
           )}
         </For>
       </ul>
+      <button
+        onClick={exportData}
+        class="bg-green-500 text-white p-2 rounded mt-4 block absolute right-0"
+      >
+        Export Data
+      </button>
     </div>
   );
 };
