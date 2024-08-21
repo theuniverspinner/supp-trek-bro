@@ -1,5 +1,6 @@
 import { createSignal, createEffect, For } from 'solid-js';
 import { useAutoFocus } from './hooks/useAutoFocus';
+import "./index.css";
 
 interface Supplement {
   id: number;
