@@ -12,7 +12,6 @@ interface SupplementListProps {
   setExpandedDay: (day: string | null) => void;
   updateSupplement: (id: number, newName: string) => void;
   deleteSupplement: (id: number) => void;
-  autoFocus: () => void;
 }
 
 const SupplementList = (props: SupplementListProps) => {
@@ -36,7 +35,6 @@ const SupplementList = (props: SupplementListProps) => {
                       item={item}
                       updateSupplement={props.updateSupplement}
                       deleteSupplement={props.deleteSupplement}
-                      autoFocus={props.autoFocus}
                     />
                   )}
                 </For>
