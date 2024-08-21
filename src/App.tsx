@@ -10,8 +10,7 @@ interface Supplement {
 }
 
 const SupplementTracker = () => {
-  const [supplement, setSupplement] = createSignal('');
-  const [intake, setIntake] = createSignal<Supplement[]>([]);
+  const [supplements, setSupplements] = createSignal<Supplement[]>([]);
   const [editingId, setEditingId] = createSignal<number | null>(null);
   const [editingValue, setEditingValue] = createSignal('');
   const [expandedDay, setExpandedDay] = createSignal<string | null>(null);
@@ -26,32 +25,43 @@ const SupplementTracker = () => {
     }));
   };
 
+  createEffect(() => {
+    const storedSupplements = localStorage.getItem('supplementIntake');
+    if (storedSupplements) {
+      const parsedSupplements = JSON.parse(storedSupplements);
+      const migratedSupplements = migrateData(parsedSupplements);
+      setSupplements(migratedSupplements);
+      localStorage.setItem('supplementIntake', JSON.stringify(migratedSupplements));
+    }
+    const today = new Date().toDateString();
+    setExpandedDay(today);
+  });
+
   const addSupplement = (e: Event) => {
     e.preventDefault();
-    if (supplement()) {
-      setIntake([...intake(), {
-        id: Date.now(),
-        name: supplement(),
-        date: new Date().toISOString(),
-      }]);
-      setSupplement('');
-      localStorage.setItem('supplementIntake', JSON.stringify(intake()));
-    }
+    const newSupplement = {
+      id: Date.now(),
+      name: editingValue(),
+      date: new Date().toISOString(),
+    };
+    setSupplements([...supplements(), newSupplement]);
+    setEditingValue('');
+    localStorage.setItem('supplementIntake', JSON.stringify(supplements()));
   };
 
   const updateSupplement = (id: number, newName: string) => {
-    setIntake(intake().map(item =>
+    setSupplements(supplements().map(item =>
       item.id === id
         ? { ...item, name: newName, date: new Date().toISOString() }
         : item
     ));
     setEditingId(null);
-    localStorage.setItem('supplementIntake', JSON.stringify(intake()));
+    localStorage.setItem('supplementIntake', JSON.stringify(supplements()));
   };
 
   const deleteSupplement = (id: number) => {
-    setIntake(intake().filter(item => item.id !== id));
-    localStorage.setItem('supplementIntake', JSON.stringify(intake()));
+    setSupplements(supplements().filter(item => item.id !== id));
+    localStorage.setItem('supplementIntake', JSON.stringify(supplements()));
   };
 
   const handleItemClick = (id: number, currentName: string) => {
@@ -62,15 +72,21 @@ const SupplementTracker = () => {
   const handleItemKeyPress = (e: KeyboardEvent, id: number) => {
     if (e.key === 'Enter') {
       updateSupplement(id, editingValue());
+    } else if (e.key === 'Delete') {
+      deleteSupplement(id);
     }
   };
 
   const handleEditBlur = (id: number) => {
-    updateSupplement(id, editingValue());
+    if (editingValue().trim() === '') {
+      deleteSupplement(id);
+    } else {
+      updateSupplement(id, editingValue());
+    }
   };
 
   const exportData = () => {
-    const data = intake();
+    const data = supplements();
     const jsonData = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -82,20 +98,6 @@ const SupplementTracker = () => {
     document.body.removeChild(a);
     setIsMenuOpen(false);
   };
-  
-  const toggleDayExpansion = (day: string) => {
-    setExpandedDay(expandedDay() === day ? null : day);
-  };
-
-  createEffect(() => {
-    const storedIntake = localStorage.getItem('supplementIntake');
-    if (storedIntake) {
-      const parsedIntake = JSON.parse(storedIntake);
-      const migratedIntake = migrateData(parsedIntake);
-      setIntake(migratedIntake);
-      localStorage.setItem('supplementIntake', JSON.stringify(migratedIntake));
-    }
-  });
 
   const Menu = () => (
     <div class="relative inline-block text-left">
@@ -126,9 +128,9 @@ const SupplementTracker = () => {
     </div>
   );
 
-  const groupIntakeByDay = () => {
+  const groupSupplementsByDay = () => {
     const groups: { [key: string]: Supplement[] } = {};
-    intake().forEach(item => {
+    supplements().forEach(item => {
       const day = new Date(item.date).toDateString();
       if (!groups[day]) {
         groups[day] = [];
@@ -139,7 +141,7 @@ const SupplementTracker = () => {
   };
 
   const sortedDays = () => {
-    const groups = groupIntakeByDay();
+    const groups = groupSupplementsByDay();
     return Object.keys(groups).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
   };
 
@@ -167,8 +169,8 @@ const SupplementTracker = () => {
       <form onSubmit={addSupplement} class="mb-6 flex">
         <input
           type="text"
-          value={supplement()}
-          onInput={(e) => setSupplement(e.currentTarget.value)}
+          value={editingValue()}
+          onInput={(e) => setEditingValue(e.currentTarget.value)}
           placeholder="Enter supplement name"
           class="flex-grow border border-gray-300 p-2 mr-2 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500"
           ref={autoFocus}
@@ -183,14 +185,14 @@ const SupplementTracker = () => {
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <div 
                 class="bg-gray-100 p-3 flex justify-between items-center cursor-pointer hover:bg-gray-200 transition duration-200"
-                onClick={() => toggleDayExpansion(day)}
+                onClick={() => setExpandedDay(expandedDay() === day ? null : day)}
               >
                 <h2 class="font-semibold text-lg text-gray-700">{formatDate(day)}</h2>
                 {expandedDay() === day ? <FaSolidChevronUp /> : <FaSolidChevronDown />}
               </div>
               {expandedDay() === day && (
                 <ul class="divide-y divide-gray-200">
-                  <For each={groupIntakeByDay()[day]}>
+                  <For each={groupSupplementsByDay()[day]}>
                     {(item) => (
                       <li class="p-3 flex items-center justify-between hover:bg-gray-50 transition duration-200">
                         {editingId() === item.id ? (
@@ -234,3 +236,4 @@ const SupplementTracker = () => {
 };
 
 export default SupplementTracker;
+
