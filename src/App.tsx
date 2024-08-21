@@ -13,59 +13,63 @@ const SupplementTracker = () => {
   const [isLoading, setIsLoading] = createSignal(true);
   const autoFocus = useAutoFocus();
 
-  createEffect(() => {
+  // Extract localStorage operations into separate functions
+  const loadSupplements = () => {
     const storedSupplements = localStorage.getItem('supplementIntake');
     if (storedSupplements) {
       try {
-        const parsedSupplements = JSON.parse(storedSupplements);
-        setSupplements(parsedSupplements);
-        setIsLoading(false);
+        setSupplements(JSON.parse(storedSupplements));
       } catch (error) {
         console.error('Error parsing stored supplements:', error);
       }
-    } else {
-      console.log('No stored supplements found');
     }
-    
-    const today = new Date().toDateString();
-    setExpandedDay(today);
-  });
-
-  createEffect(() => {
-    console.log('Effect: Supplements updated', supplements());
-  });
-
-  const addSupplement = (name: string) => {
-    const newSupplement = {
-      id: Date.now(),
-      name,
-      date: new Date().toISOString(),
-    };
-    setSupplements([...supplements(), newSupplement]);
-    localStorage.setItem('supplementIntake', JSON.stringify(supplements()));
+    setIsLoading(false);
   };
 
-  const updateSupplement = (id: number, newName: string) => {
-    setSupplements(supplements().map(item =>
-      item.id === id
-        ? { ...item, name: newName, date: new Date().toISOString() }
-        : item
-    ));
-    localStorage.setItem('supplementIntake', JSON.stringify(supplements()));
+  const saveSupplements = (newSupplements: Supplement[]) => {
+    localStorage.setItem('supplementIntake', JSON.stringify(newSupplements));
   };
 
-  const deleteSupplement = (id: number) => {
-    setSupplements(supplements().filter(item => item.id !== id));
-    localStorage.setItem('supplementIntake', JSON.stringify(supplements()));
+  // Use onMount instead of createEffect for initial load
+  onMount(() => {
+    loadSupplements();
+    setExpandedDay(new Date().toDateString());
+  });
+
+  // Simplified supplement operations
+  const supplementOperations = {
+    add: (name: string) => {
+      const newSupplement = {
+        id: Date.now(),
+        name,
+        date: new Date().toISOString(),
+      };
+      const updatedSupplements = [...supplements(), newSupplement];
+      setSupplements(updatedSupplements);
+      saveSupplements(updatedSupplements);
+    },
+    update: (id: number, newName: string) => {
+      const updatedSupplements = supplements().map(item =>
+        item.id === id ? { ...item, name: newName, date: new Date().toISOString() } : item
+      );
+      console.log(updatedSupplements)
+      setSupplements(updatedSupplements);
+      saveSupplements(updatedSupplements);
+    },
+    delete: (id: number) => {
+      const updatedSupplements = supplements().filter(item => item.id !== id);
+      setSupplements(updatedSupplements);
+      saveSupplements(updatedSupplements);
+    },
   };
 
   return (
     <div class="p-4 relative max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
-      <div class="flex justify-between items-center mb-6">
+      <header class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Supplement Tracker</h1>
         <Menu supplements={supplements()} />
-      </div>
-      <SupplementForm addSupplement={addSupplement} autoFocus={autoFocus} />
+      </header>
+      <SupplementForm addSupplement={supplementOperations.add} autoFocus={autoFocus} />
       {isLoading() ? (
         <p>Loading supplements...</p>
       ) : (
@@ -74,8 +78,8 @@ const SupplementTracker = () => {
           sortedDays={sortedDays(supplements())}
           expandedDay={expandedDay()}
           setExpandedDay={setExpandedDay}
-          updateSupplement={updateSupplement}
-          deleteSupplement={deleteSupplement}
+          updateSupplement={supplementOperations.update}
+          deleteSupplement={supplementOperations.delete}
           autoFocus={autoFocus}
         />
       )}
