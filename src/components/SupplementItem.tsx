@@ -1,21 +1,30 @@
 // components/SupplementItem.tsx
 import { createSignal } from 'solid-js';
 import { FaSolidJedi as FaSolidEdit, FaSolidTrash } from 'solid-icons/fa';
+import { Supplement } from '../types';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 
-const SupplementItem = ({ item, updateSupplement, deleteSupplement, autoFocus }) => {
+interface SupplementItemProps {
+  item: Supplement;
+  updateSupplement: (id: number, newName: string) => void;
+  deleteSupplement: (id: number) => void;
+}
+
+const SupplementItem = (props: SupplementItemProps) => {
   const [isEditing, setIsEditing] = createSignal(false);
-  const [editValue, setEditValue] = createSignal(item.name);
+  const [editValue, setEditValue] = createSignal(props.item.name);
+  const autoFocus = useAutoFocus();
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditValue(item.name);
+    setEditValue(props.item.name);
   };
 
   const handleUpdate = () => {
     if (editValue().trim() === '') {
-      deleteSupplement(item.id);
+      props.deleteSupplement(props.item.id);
     } else {
-      updateSupplement(item.id, editValue().trim());
+      props.updateSupplement(props.item.id, editValue().trim());
     }
     setIsEditing(false);
   };
@@ -23,8 +32,9 @@ const SupplementItem = ({ item, updateSupplement, deleteSupplement, autoFocus })
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleUpdate();
-    } else if (e.key === 'Delete') {
-      deleteSupplement(item.id);
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+      setEditValue(props.item.name);
     }
   };
 
@@ -41,7 +51,7 @@ const SupplementItem = ({ item, updateSupplement, deleteSupplement, autoFocus })
           ref={autoFocus}
         />
       ) : (
-        <span class="flex-grow">{item.name} - {new Date(item.date).toLocaleTimeString()}</span>
+        <span class="flex-grow">{props.item.name} - {new Date(props.item.date).toLocaleTimeString()}</span>
       )}
       <div class="flex space-x-2">
         <button
@@ -51,7 +61,7 @@ const SupplementItem = ({ item, updateSupplement, deleteSupplement, autoFocus })
           <FaSolidEdit />
         </button>
         <button
-          onClick={() => deleteSupplement(item.id)}
+          onClick={() => props.deleteSupplement(props.item.id)}
           class="text-red-500 hover:text-red-700 transition duration-200"
         >
           <FaSolidTrash />

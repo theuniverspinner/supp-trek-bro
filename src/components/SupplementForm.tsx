@@ -1,13 +1,19 @@
 // components/SupplementForm.tsx
 import { createSignal } from 'solid-js';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 
-const SupplementForm = ({ addSupplement, autoFocus }) => {
+interface SupplementFormProps {
+  addSupplement: (name: string) => void;
+}
+
+const SupplementForm = (props: SupplementFormProps) => {
   const [supplementName, setSupplementName] = createSignal('');
+  const autoFocus = useAutoFocus();
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
     if (supplementName().trim()) {
-      addSupplement(supplementName().trim());
+      props.addSupplement(supplementName().trim());
       setSupplementName('');
     }
   };

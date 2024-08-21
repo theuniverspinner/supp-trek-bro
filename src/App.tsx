@@ -1,5 +1,4 @@
-import { createSignal, createEffect, onMount } from 'solid-js';
-import { useAutoFocus } from './hooks/useAutoFocus';
+import { createSignal, onMount } from 'solid-js';
 import { Supplement } from './types';
 import SupplementForm from './components/SupplementForm';
 import SupplementList from './components/SupplementList';
@@ -11,7 +10,6 @@ const SupplementTracker = () => {
   const [supplements, setSupplements] = createSignal<Supplement[]>([]);
   const [expandedDay, setExpandedDay] = createSignal<string | null>(null);
   const [isLoading, setIsLoading] = createSignal(true);
-  const autoFocus = useAutoFocus();
 
   // Extract localStorage operations into separate functions
   const loadSupplements = () => {
@@ -52,7 +50,6 @@ const SupplementTracker = () => {
       const updatedSupplements = supplements().map(item =>
         item.id === id ? { ...item, name: newName, date: new Date().toISOString() } : item
       );
-      console.log(updatedSupplements)
       setSupplements(updatedSupplements);
       saveSupplements(updatedSupplements);
     },
@@ -69,7 +66,7 @@ const SupplementTracker = () => {
         <h1 class="text-3xl font-bold text-gray-800">Supplement Tracker</h1>
         <Menu supplements={supplements()} />
       </header>
-      <SupplementForm addSupplement={supplementOperations.add} autoFocus={autoFocus} />
+      <SupplementForm addSupplement={supplementOperations.add} />
       {isLoading() ? (
         <p>Loading supplements...</p>
       ) : (
@@ -80,7 +77,6 @@ const SupplementTracker = () => {
           setExpandedDay={setExpandedDay}
           updateSupplement={supplementOperations.update}
           deleteSupplement={supplementOperations.delete}
-          autoFocus={autoFocus}
         />
       )}
     </div>
