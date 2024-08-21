@@ -19,6 +19,7 @@ const SupplementTracker = () => {
       try {
         const parsedSupplements = JSON.parse(storedSupplements);
         setSupplements(parsedSupplements);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error parsing stored supplements:', error);
       }
@@ -28,7 +29,6 @@ const SupplementTracker = () => {
     
     const today = new Date().toDateString();
     setExpandedDay(today);
-    setIsLoading(false);
   });
 
   createEffect(() => {
