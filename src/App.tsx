@@ -1,5 +1,4 @@
-// SupplementTracker.tsx
-import { createSignal, createEffect } from 'solid-js';
+import { createSignal, createEffect, onMount } from 'solid-js';
 import { useAutoFocus } from './hooks/useAutoFocus';
 import { Supplement } from './types';
 import SupplementForm from './components/SupplementForm';
@@ -11,16 +10,29 @@ import "./index.css";
 const SupplementTracker = () => {
   const [supplements, setSupplements] = createSignal<Supplement[]>([]);
   const [expandedDay, setExpandedDay] = createSignal<string | null>(null);
+  const [isLoading, setIsLoading] = createSignal(true);
   const autoFocus = useAutoFocus();
 
   createEffect(() => {
     const storedSupplements = localStorage.getItem('supplementIntake');
     if (storedSupplements) {
-      const parsedSupplements = JSON.parse(storedSupplements);
-      setSupplements(parsedSupplements);
+      try {
+        const parsedSupplements = JSON.parse(storedSupplements);
+        setSupplements(parsedSupplements);
+      } catch (error) {
+        console.error('Error parsing stored supplements:', error);
+      }
+    } else {
+      console.log('No stored supplements found');
     }
+    
     const today = new Date().toDateString();
     setExpandedDay(today);
+    setIsLoading(false);
+  });
+
+  createEffect(() => {
+    console.log('Effect: Supplements updated', supplements());
   });
 
   const addSupplement = (name: string) => {
@@ -54,18 +66,21 @@ const SupplementTracker = () => {
         <Menu supplements={supplements()} />
       </div>
       <SupplementForm addSupplement={addSupplement} autoFocus={autoFocus} />
-      <SupplementList
-        groupedSupplements={groupSupplementsByDay(supplements())}
-        sortedDays={sortedDays(supplements())}
-        expandedDay={expandedDay()}
-        setExpandedDay={setExpandedDay}
-        updateSupplement={updateSupplement}
-        deleteSupplement={deleteSupplement}
-        autoFocus={autoFocus}
-      />
+      {isLoading() ? (
+        <p>Loading supplements...</p>
+      ) : (
+        <SupplementList
+          groupedSupplements={groupSupplementsByDay(supplements())}
+          sortedDays={sortedDays(supplements())}
+          expandedDay={expandedDay()}
+          setExpandedDay={setExpandedDay}
+          updateSupplement={updateSupplement}
+          deleteSupplement={deleteSupplement}
+          autoFocus={autoFocus}
+        />
+      )}
     </div>
   );
 };
 
 export default SupplementTracker;
-
